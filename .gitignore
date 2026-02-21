@@ -52,3 +52,4 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+/WarGame/.vs/WarGame/FileContentIndex/3488eff9-1e18-4d37-a694-ed7928ae4326.vsidx
