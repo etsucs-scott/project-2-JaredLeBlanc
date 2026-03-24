@@ -22,12 +22,12 @@ namespace WarGame.ConsoleApp
             // create and start game
             ICardGame game = new WarGameEngine(players);
 
+            var warGame = (WarGameEngine)game;
             game.StartHand();
-            //game.PlayHand();
+            game.PlayHand();
             game.StopHand();
 
-            var warGame = (WarGameEngine)game;
-
+            // print formatted round summaries
             PrintRounds(warGame);
 
             Console.WriteLine("=== GAME OVER ===");
@@ -49,37 +49,46 @@ namespace WarGame.ConsoleApp
                     Console.Write("Enter the number of players (2-4): ");
                 }
                 while (!int.TryParse(Console.ReadLine(), out result) || result < 2 || result > 4);
-                
+
                 return result;
             }
 
             static void PrintRounds(WarGameEngine game)
             {
                 int roundNumber = 1;
-                 
+
                 foreach (var round in game.RoundHistory)
                 {
                     Console.WriteLine($"--- Round {roundNumber} ----");
 
-                    foreach (var play in round.PlayedCards)
+                    // print each players card for the round.
+                    foreach (var kv in round.PlayedCards)
                     {
-                        Console.WriteLine($"{play.Key.Name} played {play.Value}");
+                        Console.WriteLine($"{kv.Key.Name} played {kv.Value}");
                     }
 
+                    // display tie message
                     if (round.IsTie)
                     {
                         Console.WriteLine("Tie between: " + string.Join(", ", round.TiedPlayers.Select(p => p.Name)));
                     }
 
-                    else
+                    // display pot contents
+                    if (round.PotSnapshot != null && round.PotSnapshot.Any())
                     {
-                        Console.WriteLine($"Winner: {round.Winner?.Name}");
+                        Console.WriteLine("Pot Includes: " + string.Join(", ", round.PotSnapshot));
                     }
 
-                    Console.WriteLine("Card Counts: ");
-                    foreach (var count in round.CardCounts)
+                    // display tiebreaker cards
+                    if (round.TieBreakerCards != null && round.TieBreakerCards.Any())
                     {
-                        Console.WriteLine($"{count.Key.Name}: {count.Value} cards");
+                        Console.WriteLine("Tiebreaker: " + string.Join(" | ", round.TieBreakerCards.Select(kv => $"{kv.Key.Name}: {kv.Value}")));
+                    }
+
+                    // display the winner and card count
+                    if (round.Winner != null)
+                    {
+                        Console.WriteLine($"Winner: {round.Winner.Name} " + $"(Cards: {string.Join(", ", round.CardCounts.Select(kv => $"{kv.Key.Name} = {kv.Value}"))})");
                     }
 
                     Console.WriteLine();

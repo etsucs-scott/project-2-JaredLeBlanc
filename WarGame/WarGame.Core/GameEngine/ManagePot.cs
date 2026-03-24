@@ -31,6 +31,11 @@ namespace WarGame.Core.GameEngine
             _pot.Clear();
         }
 
+        public List<Card> GetPot()
+        {
+            return _pot;
+        }
+
         public void Clear()
         {
             _pot.Clear();

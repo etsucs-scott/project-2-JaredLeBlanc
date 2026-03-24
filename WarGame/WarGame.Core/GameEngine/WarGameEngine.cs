@@ -37,7 +37,7 @@ namespace WarGame.Core.GameEngine
                 _playerHands.Hands[player] = new Hand();
             }
         }
-        /*
+        
         public void PlayHand()
         {
             int round = 0;
@@ -51,7 +51,7 @@ namespace WarGame.Core.GameEngine
                 RoundHistory.Add(result);
             }
         }
-        */
+        
         public void StartHand()
         {
             Deck = new Deck();
@@ -62,23 +62,12 @@ namespace WarGame.Core.GameEngine
         {
             // not needed.
         }
-
-        public RoundResult? PlayNextRound()
-        {
-            if (_playerHands.ActivePlayers.Count() <= 1 || RoundHistory.Count >= RoundLimit)
-            {
-                return null;
-            }
-
-            var result = PlayRound(_playerHands.ActivePlayers.ToList());
-            RoundHistory.Add(result);
-            return result;
-        }
-
+        
         private RoundResult PlayRound(List<Player> players)
         {
             var result = new RoundResult();
             var played = new Dictionary<Player, Card>();
+            var pot = new List<Card>();
 
             players = players.Where(p => _playerHands.Hands[p].Count > 0).ToList();
 
@@ -86,26 +75,33 @@ namespace WarGame.Core.GameEngine
             {
                 var card = _playerHands.Hands[player].DrawTop();
                 played[player] = card;
-                _potManager.Add(card);
+                pot.Add(card);
             }
 
-            var PlayedCard = new Dictionary<Player, Card>(played);
+            result.PotSnapshot = new List<Card>(pot);
+
+            result.PlayedCards = new Dictionary<Player, Card>(played);
 
             var maxRank = played.Values.Max(c => c.Rank);
-
             var winners = played.Where(p => p.Value.Rank == maxRank).Select(p => p.Key).ToList();
 
             if (winners.Count == 1)
             {
                 // for single winner
                 result.Winner = winners[0];
-                _potManager.AwardTo(winners[0], _playerHands);
+
+                result.PotSnapshot = new List<Card>(pot);
+
+                foreach (var card in pot)
+                {
+                    _playerHands.Hands[winners[0]].AddToBottom(card);
+                }
             }
             else
             {
                 // when tie is detected
                 result.TiedPlayers = winners;
-                ResolveTie(winners, result);
+                ResolveTie(winners, result, pot);
             }
 
             // update the card counts after the round
@@ -114,13 +110,14 @@ namespace WarGame.Core.GameEngine
             return result;
         }
 
-        private void ResolveTie(List<Player> tiedPlayers, RoundResult result)
+        private void ResolveTie(List<Player> tiedPlayers, RoundResult result, List<Card> pot)
         {
-            var active = tiedPlayers;
+            var active = new List<Player>(tiedPlayers);
+            var tiebreakPlayed = new Dictionary<Player, Card>();
 
             while (true)
             {
-                var played = new Dictionary<Player, Card>();
+                tiebreakPlayed.Clear();
 
                 foreach (var player in active.ToList())
                 {
@@ -131,30 +128,39 @@ namespace WarGame.Core.GameEngine
                     }
 
                     var card = _playerHands.Hands[player].DrawTop();
-                    played[player] = card;
-                    _potManager.Add(card);
+                    tiebreakPlayed[player] = card;
+                    pot.Add(card);
                 }
 
-                if (!played.Any())
-                {
-                    return;
-                }
-
-                foreach (var kvp in played)
+                foreach (var kvp in tiebreakPlayed)
                 {
                     result.PlayedCards[kvp.Key] = kvp.Value;
                 }
 
+                result.TieBreakerCards = new Dictionary<Player, Card>(tiebreakPlayed);
+                result.PotSnapshot = new List<Card>(pot);
+
                 if (active.Count == 1)
                 {
+
                     result.Winner = active[0];
-                    _potManager.AwardTo(active[0], _playerHands);
+
+                    foreach (var card in pot)
+                    {
+                        _playerHands.Hands[active[0]].AddToBottom(card);
+                    }
+
                     return;
                 }
 
-                var maxRank = played.Values.Max(c => c.Rank);
+                var maxRank = tiebreakPlayed.Values.Max(c => c.Rank);
 
-                active = played.Where(p => p.Value.Rank == maxRank).Select(p => p.Key).ToList();
+                active = tiebreakPlayed.Where(p => p.Value.Rank == maxRank).Select(p => p.Key).ToList();
+
+                if (active.Count == 0)
+                {
+                    return;
+                }
             }
         }
 
