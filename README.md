@@ -1,6 +1,7 @@
 War Game
 
-	A console-based card game in C# simulating the classic game of War, supporting 2–4 players with automatic round handling, tiebreakers, and a pot system.
+	A console-based card game in C# simulating the classic game of War, 
+	supporting 2–4 players with automatic round handling, tiebreakers, and a pot system.
 
 Build & Run
 
@@ -24,7 +25,8 @@ Key Features
   
 Gameplay Rules
 
-	Each player starts with an equal share of a standard 52-card deck. Extra cards (if uneven division) go to the first players in order.
+	Each player starts with an equal share of a standard 52-card deck. 
+	Extra cards (if uneven division) go to the first players in order.
 	Ranks order: 2 < 3 < 4 < … < 10 < J < Q < K < A. Suits are ignored.
 	Each round, players reveal the top card from their hand.
 	The highest card wins the round and collects all cards in the pot.
@@ -34,7 +36,8 @@ Gameplay Rules
 	Winner of the tiebreaker collects the entire pot.
 	Players with no cards are eliminated.
 	The game continues until a single player has all cards or the round limit is reached.
-	If the round limit (10,000) is reached, the player with the most cards wins. If tied, the game ends in a draw.
+	If the round limit (10,000) is reached, the player with the most cards wins. 
+	If tied, the game ends in a draw.
 
 Player Selection
 
