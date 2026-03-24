@@ -11,7 +11,8 @@ Build & Run
 
 OverView
 
-	This project implements a modified version of the card game War, where multiple players compete to collect all cards. The game uses object-oriented design, including classes for Player, Card, Deck, Hand, and WarGameEngine.
+	This project implements a modified version of the card game War, where multiple players compete to collect all cards. 
+	The game uses object-oriented design, including classes for Player, Card, Deck, Hand, and WarGameEngine.
   
 Key Features
 
