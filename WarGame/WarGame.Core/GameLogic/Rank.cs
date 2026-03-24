@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WarGame.Core.GameLogic
 {
+    // The card ranks for a standard deck.
     public enum Rank
     {
         Two = 2,

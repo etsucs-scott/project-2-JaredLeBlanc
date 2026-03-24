@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36915.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarGame.Console", "WarGame\WarGame.Console.csproj", "{C119BCB6-6AC9-4487-853E-40ADCD8E856D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarGame.ConsoleApp", "WarGame\WarGame.ConsoleApp.csproj", "{C119BCB6-6AC9-4487-853E-40ADCD8E856D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarGame.Core", "WarGame.Core\WarGame.Core.csproj", "{8C485C7C-9CCC-4F50-8B30-1C6CFDEB291F}"
 EndProject

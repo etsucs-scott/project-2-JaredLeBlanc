@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WarGame.Core.GameLogic
 {
+    // The 4 suits for a standard deck
     public enum Suit
     {
         Hearts, Diamonds, Clubs, Spades
